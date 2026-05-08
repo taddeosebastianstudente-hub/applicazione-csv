@@ -4,14 +4,15 @@ using namespace std;
 struct Info{
 	string ClasseToponimo;
 	string DescrizioneToponimo;
-	int Numero;
+	string Numero;
 	string Subalterno;
-	int CAP;
-	int SezioneISTAT;
-	double Lat;
-	double Lon;
-	double Location;
+	string CAP;
+	string SezioneISTAT;
+	float Lat;
+	float Lon;
+	float Location;
 	};
+
 void CaricaDati(Info x[], string y){
 	ifstream fileInput("testo.txt");
     string linea;
@@ -24,7 +25,6 @@ void CaricaDati(Info x[], string y){
         cout << "Impossibile aprire il file";
     }
 	}
-
 int main(int argc, char** argv) {
 	
 	return 0;
