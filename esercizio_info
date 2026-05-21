@@ -1,0 +1,124 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+using namespace std;
+struct Info {
+    string ClasseToponimo;
+    string DescrizioneToponimo;
+    string Numero;
+    string Subalterno;
+    string CAP;
+    string SezioneISTAT;
+};
+struct Indirizzo {
+    float Lat;
+    float Lon;
+    string Location;
+};
+struct Record {
+    Info info;
+    Indirizzo ind;
+};
+int main() {
+    Record database[1000];
+    int contatore=0;
+    int scelta;
+    do {
+        cout<<"1-carica i primi 1000 record dal file"<<endl;
+        cout<<"2-visualizza i dati in memoria"<<endl;
+        cout<<"3-cerca via e mostra in ordine di numero crescente"<<endl;
+        cout<<"0-esci dal programma"<<endl;
+        cout<<"inserisci la tua scelta: ";
+        cin>>scelta;
+        switch (scelta) {
+            case 1: {
+                contatore=0; 
+                ifstream fileIn("dati.txt");
+                if (!fileIn.is_open()) {
+                    cout<<"impossibile aprire il file"<<endl;
+                } else {
+                    while (contatore<1000 && 
+                           fileIn>>database[contatore].info.ClasseToponimo 
+                                  >>database[contatore].info.DescrizioneToponimo
+                                  >>database[contatore].info.Numero
+                                  >>database[contatore].info.Subalterno
+                                  >>database[contatore].info.CAP
+                                  >>database[contatore].info.SezioneISTAT
+                                  >>database[contatore].ind.Lat
+                                  >>database[contatore].ind.Lon
+                                  >>database[contatore].ind.Location) {
+                        contatore++;
+                    }
+                    fileIn.close();
+                    cout << "dati caricati" << endl;
+                }
+                break;
+            }
+            case 2: {
+                if (contatore == 0) {
+                    cout<<"memoria vuota carica i dati con 1"<<endl;
+                } else {
+                    for (int i=0;i<contatore;i++) {
+                        cout<<"record "<<i+1<<endl;
+                        cout<<"classe toponimo: "<<database[i].info.ClasseToponimo<<endl;
+                        cout<<"descrizione: "<<database[i].info.DescrizioneToponimo<<endl;
+                        cout<<"numero: "<<database[i].info.Numero<<endl;
+                        cout<<"subalterno: "<<database[i].info.Subalterno<<endl;
+                        cout<<"CAP: "<<database[i].info.CAP<<endl;
+                        cout<<"sezione ISTAT: "<<database[i].info.SezioneISTAT<<endl;
+                        cout<<"latitudine: "<<database[i].ind.Lat<<endl;
+                        cout<<"longitudine: "<<database[i].ind.Lon<<endl;
+                        cout<<"location: "<<database[i].ind.Location<<endl;
+                        cout<<"------------------------------------------"<<endl;
+                    }
+                }
+                break;
+            }
+            case 3: {
+                if (contatore==0) {
+                    cout << "memoria vuota carica i dati con 1" << endl;
+                } else {
+                    string viaCercata;
+                    cout<<"inserisci il nome della via da cercare: ";
+                    cin>>viaCercata;
+                    Record risultati[1000];
+                    int contatoreRisultati=0;
+                    for (int i=0;i<contatore;i++) {
+                        if (database[i].info.DescrizioneToponimo==viaCercata) {
+                            risultati[contatoreRisultati]=database[i];
+                            contatoreRisultati++;
+                        }
+                    }
+                    if (contatoreRisultati==0) {
+                        cout<<"nessun record trovato per la via: "<<viaCercata<<endl;
+                    } else {
+                        cout<<"trovati "<<contatoreRisultati<<" record per la via "<<viaCercata<<endl;
+                        for (int i=0;i<contatoreRisultati-1;i++) {
+                            for (int j=0;j<contatoreRisultati-i-1;j++) {
+                                if (risultati[j].info.Numero>risultati[j+1].info.Numero) {
+                                    Record temp=risultati[j];
+                                    risultati[j]=risultati[j+1];
+                                    risultati[j+1]=temp;
+                                }
+                            }
+                        }
+                        for (int i=0;i<contatoreRisultati;i++) {
+                            cout<<"civico: "<<risultati[i].info.Numero 
+                                 <<"classe: "<<risultati[i].info.ClasseToponimo
+                                 <<"CAP: "<<risultati[i].info.CAP 
+                                 <<"posizione latitudine: "<<risultati[i].ind.Lat << ", posizione longitudine:"<<risultati[i].ind.Lon<<endl;
+                        }
+                    }
+                }
+                break;
+            }
+            case 0:
+                cout << "uscita programma" << endl;
+                break;
+            default:
+                cout<<"scelta non valida rifai"<<endl;
+                break;
+        }
+    } while (scelta!=0);
+    return 0;
+}
